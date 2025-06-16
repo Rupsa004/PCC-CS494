@@ -61,7 +61,7 @@ void fly_war(){
 void Dmatrix(){
     for(int i=0;i<n;i++){
         for(int j=0;j<n;j++){
-            printf("%d",d[i][j]);
+            printf("%6d",d[i][j]);
         }
         printf("\n");
     }
@@ -70,7 +70,7 @@ void Dmatrix(){
 void Pmatrix(){
     for(int i=0;i<n;i++){
         for(int j=0;j<n;j++){
-            printf("%d",p[i][j]);
+            printf("%6d",p[i][j]);
         }
         printf("\n");
     }
@@ -78,14 +78,14 @@ void Pmatrix(){
 
 void shortestPath(int i,int j){
     if(i==j){
-        printf("%d",i);
+        printf("%c",'A'+i);
     }
     else if(p[i][j]==-1){
         printf("no path");
     }
     else{
         shortestPath(i,p[i][j]);
-        printf("%d",j);
+        printf("%c",'A'+j);
     }
 }
 void printShortestpath(){
