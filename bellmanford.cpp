@@ -1,4 +1,5 @@
 #include<iostream>
+#include<stdlib.h>
 #define INF 999
 
 int n, graph[10][10],dist[100];
@@ -20,20 +21,24 @@ void readGraph(){
 }
 
 void showGraph(){
-    for(int i=0;i<n;i++)
-        for(int j=0;j<n;j++)
+    for(int i=0;i<n;i++){
+        for(int j=0;j<n;j++){
             printf("%6d", graph[i][j]);
+        }
         printf("\n");
+    }
 }
 
 int bellman(int start){
     for(int i=0;i<n;i++)
         dist[i]=INF;
+
     dist[start]=0;
+
     for(int k=0;k<n-1;k++){
         for(int i=0;i<n;i++){
             for(int j=0;j<n;j++){
-                if(graph[i][j]!=INF && dist[i]+graph[i][j]<dist[j]){
+                if(graph[i][j]!=INF && dist[i]!=INF && dist[i]+graph[i][j]<dist[j]){
                     dist[j]=dist[i]+graph[i][j];                
                 }
             }
@@ -41,7 +46,7 @@ int bellman(int start){
     }
     for(int i=0;i<n;i++){
         for(int j=0;j<n;j++){
-            if(graph[i][j]!=INF && dist[i]+graph[i][j]<dist[j]){
+            if(graph[i][j]!=INF && dist[i]!=INF && dist[i]+graph[i][j]<dist[j]){
                 return 0;
             }
         }
@@ -53,7 +58,7 @@ int bellman(int start){
 void printresult(){
     printf("\nshortest dist from source: \n");
     for(int i=0;i<n;i++){
-        if(dist=INF)
+        if(dist[i]==INF)
             printf("s to %c-> unreachable\n",'A'+i);
         else
             printf("S to %c -> %d\n", 'A'+i,dist[i]);
