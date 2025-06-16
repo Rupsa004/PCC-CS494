@@ -1,10 +1,9 @@
 #include<iostream>
-#define MAX 100
 using namespace std;
+#define MAX 100
 
 int cost[MAX][MAX];
 int n;
-
 
 void readGraph(){
     FILE *fp;
@@ -17,28 +16,28 @@ void readGraph(){
     for(int i=0;i<n;i++){
         for(int j=0;j<n;j++){
             fscanf(fp,"%d",&cost[i][j]);
+
         }
     }
     fclose(fp);
-
 }
+
 void showGraph(){
     for(int i=0;i<n;i++){
         for(int j=0;j<n;j++){
-            printf("%3d", cost[i][j]);
-            cout<<endl;
+            printf("%3d" , cost[i][j]);
         }
+        printf("\n");
     }
 }
 
-int key[MAX];
 int parent[MAX];
 int mstset[MAX];
+int key[MAX];
 
 int min_ver(){
     int min=9999;
     int index=-1;
-
     for(int i=0;i<n;i++){
         if(mstset[i]==0 && key[i]<min){
             min=key[i];
@@ -48,7 +47,7 @@ int min_ver(){
     return index;
 }
 
-void prims(int start){
+void diks(int start){
     for(int i=0;i<n;i++){
         key[i]=9999;
         parent[i]=-1;
@@ -57,7 +56,6 @@ void prims(int start){
     key[start]=0;
     for(int i=0;i<n;i++){
         int u=min_ver();
-        mstset[u]=1;
         for(int v=0;v<n;v++){
             if(cost[u][v]!=0 && mstset[v]==0 && key[v]>cost[u][v]){
                 key[v]=cost[u][v];
@@ -67,21 +65,29 @@ void prims(int start){
     }
 }
 
-void display(){
-    int cost=0;
+void printpath(int src,int dest){
+    if(src==dest){
+        cout<<src<<" ";
+        return;
+    }
+    printpath(src,parent[dest]);
+    cout<<dest<<" ";
+}
+void pathcost(int src){
     for(int i=0;i<n;i++){
-        if(parent[i]!=-1){
-            printf("%c -> %c : %d\n", parent[i]+'A', i+'A', :: cost[parent[i]][i]);
-            cost+=key[i];
+        if(i!=src){
+            cout<<"path from "<<src<<"to "<<i<<" : ";
+            printpath(src,i);
+            cout<<endl;
         }
     }
-    cout<<"total cost: "<<cost<<endl;
 }
 
 int main(){
     readGraph();
     showGraph();
-    prims(0);
-    display();
+    int src=0;
+    diks(src);
+    pathcost(src);
     return 0;
 }
