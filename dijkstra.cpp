@@ -1,72 +1,96 @@
 #include<iostream>
-#define INF 999
+#include<stdio.h>
+#define MAX 100
+using namespace std;
 
-int n, graph[10][10],dist[100];
+int cost[MAX][MAX];
+int n;
 
 void readGraph(){
     FILE *fp;
-    fp= fopen("ford.txt","r");
+    fp = fopen("graph.txt","r");
     if(fp==NULL){
-        printf("file does not exist");
+        cout<<"file doesn't exist";
         exit(1);
     }
     fscanf(fp,"%d",&n);
     for(int i=0;i<n;i++){
         for(int j=0;j<n;j++){
-            fscanf(fp,"%d",&graph[i][j]);
+            fscanf(fp, "%d" , &cost[i][j]);
         }
     }
     fclose(fp);
 }
 
-void showGraph(){
-    for(int i=0;i<n;i++)
-        for(int j=0;j<n;j++)
-            printf("%6d", graph[i][j]);
-        printf("\n");
-}
-
-int bellman(int start){
-    for(int i=0;i<n;i++)
-        dist[i]=INF;
-    dist[start]=0;
-    for(int k=0;k<n-1;k++){
-        for(int i=0;i<n;i++){
-            for(int j=0;j<n;j++){
-                if(graph[i][j]!=INF && dist[i]+graph[i][j]<dist[j]){
-                    dist[j]=dist[i]+graph[i][j];                
-                }
-            }
-        }
-    }
+void showGrapgh(){
     for(int i=0;i<n;i++){
         for(int j=0;j<n;j++){
-            if(graph[i][j]!=INF && dist[i]+graph[i][j]<dist[j]){
-                return 0;
+            printf("%3d",cost[i][j]);
+        }
+        cout<<endl;
+    }
+}
+
+int key[MAX];
+int parent[MAX];
+int mstSet[MAX];
+
+int min_vertex(){
+    int index=-1;
+    int min=9999;
+    for(int i=0;i<n;i++){
+        if(mstSet[i]==0 && key[i]<min){
+            min=key[i];
+            index=i;
+        }
+    }
+    return index;
+}
+
+void Dijkstra(int start){
+    for(int i=0;i<n;i++){
+        key[i]=9999;
+        parent[i]=-1;
+        mstSet[i]=0;
+    }
+    key[start]=0;
+    for(int i=0;i<n;i++){
+        int u=min_vertex();
+        mstSet[u]=1;
+        for(int v=0;v<n;v++){
+            if(cost[u][v]!=0 && mstSet[v]==0 && key[v]>cost[u][v]){
+            key[v]=cost[u][v];
+            parent[v]=u;
             }
         }
     }
-    return 1;
-
 }
 
-void printresult(){
-    printf("\nshortest dist from source: \n");
+void printPath(int src, int dest){
+    if(src==dest){
+        cout<<src<<" ";
+        return;
+    }
+    printPath(src, parent[dest]);
+    cout<<dest<<" ";
+    }
+
+void pathCost(int src){
     for(int i=0;i<n;i++){
-        if(dist=INF)
-            printf("s to %c-> unreachable\n",'A'+i);
-        else
-            printf("S to %c -> %d\n", 'A'+i,dist[i]);
+        if(i!=src){
+            cout<<"path from "<<src<<" to "<<i<<": ";
+            printPath(src,i);
+            cout<<endl;
         }
     }
+}
 
 int main(){
     readGraph();
-    showGraph();
-    int result = bellman(0);
-    if(result)
-        printresult();
-    else
-        printf("contains negative cycle");
-return 0; 
+    showGrapgh();
+    int src=0;
+    Dijkstra(src);
+    pathCost(src);
+    return 0;
+
 }
